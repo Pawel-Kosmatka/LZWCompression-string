@@ -7,7 +7,7 @@ namespace LzwStringCompression
     {
         static void Main(string[] args)
         {
-            var compressed = Compress("string to be compressed");
+            var compressed = Compress("Ala ma kota kot ma Ale");
             Console.WriteLine(string.Join(",", compressed));
             var decompressed = Decompress(compressed);
             Console.WriteLine(decompressed);
@@ -54,30 +54,28 @@ namespace LzwStringCompression
                 dictionary.Add(i, ((char)i).ToString());
             }
 
-            string fc = dictionary[source[0]];
+            var fc = source[0];
             source.RemoveAt(0);
 
-            var result = fc;
+            var result = dictionary[fc];
 
             foreach (var c in source)
             {
-                var entry = string.Empty;
+                var pc = dictionary[fc];
                 if (dictionary.ContainsKey(c))
                 {
-                    entry = dictionary[c];
+                    dictionary.Add(dictionary.Count, pc + dictionary[c][0]);
+                    result += dictionary[c];
                 }
-                else if (c == dictionary.Count)
+                else
                 {
-                    entry = fc + fc[0];
+                    dictionary.Add(dictionary.Count, pc + pc[0]);
+                    result += pc + pc[0];
                 }
 
-                result += entry;
-
-                dictionary.Add(dictionary.Count, result + entry[0]);
-
-                fc = entry;
+                fc = c;
             }
-            return result;
+            return result.ToString();
         }
     }
 
